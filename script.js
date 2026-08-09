@@ -171,7 +171,7 @@ function buildWhatsappLink(message) {
 /** Render header lokasi & judul dari config */
 function renderStaticText() {
   document.getElementById("headerCity").textContent = siteConfig.city;
-  document.getElementById("heroTitle").textContent = siteConfig.hero.title;
+  document.getElementById("heroTitle").innerHTML = siteConfig.hero.title.replace(" ", " <br class=\"hero-break\">");
   document.getElementById("heroSubtitle").textContent = siteConfig.hero.subtitle;
 
   document.getElementById("showroomName").textContent = siteConfig.showroomName;
