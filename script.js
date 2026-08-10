@@ -14,10 +14,10 @@ const siteConfig = {
   city: "Makassar, Sulawesi Selatan",
 
   // Nomor WhatsApp showroom (format internasional, tanpa +, tanpa spasi)
-  whatsappNumber: "6285825033412",
+  whatsappNumber: "6285191567566",
 
   // Nomor telepon yang ditampilkan (boleh format bebas untuk ditampilkan)
-  phone: "0858-2503-3412",
+  phone: "0851-9156-7566",
 
   // Link Google Maps ke lokasi showroom
   googleMapsUrl: "https://maps.app.goo.gl/setXAMxxikZGmeEM8",
