@@ -236,6 +236,31 @@ button { font-family: inherit; cursor: pointer; }
   margin-top: 34px;
 }
 
+.hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 460px;
+}
+.hero-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.hero-info-item .icon {
+  color: #7cb3e8;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
 /* ============ SECTIONS ============ */
 .section { padding: 96px 0; }
 .section--dark { background: var(--navy-2); }

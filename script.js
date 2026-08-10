@@ -173,6 +173,8 @@ function renderStaticText() {
   document.getElementById("headerCity").textContent = siteConfig.city;
   document.getElementById("heroTitle").innerHTML = siteConfig.hero.title.replace(" ", " <br class=\"hero-break\">");
   document.getElementById("heroSubtitle").textContent = siteConfig.hero.subtitle;
+  document.getElementById("heroHours").innerHTML = `${siteConfig.showroom.hoursWeekday} WITA<br>${siteConfig.showroom.hoursWeekend} WITA`;
+  document.getElementById("heroAddress").textContent = siteConfig.showroom.address;
 
   document.getElementById("showroomName").textContent = siteConfig.showroomName;
   document.getElementById("showroomAddress").textContent = siteConfig.showroom.address;
