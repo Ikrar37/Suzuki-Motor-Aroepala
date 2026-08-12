@@ -7,24 +7,7 @@
    ========================================================= */
 
 /* =========================================================
-   0. GOOGLE SHEETS — sumber data yang bisa diedit tanpa kode
-   Ikuti panduan "Cara Menghubungkan Google Sheets" untuk isi
-   3 nilai di bawah ini. Selama SHEET_ID masih kosong,
-   website akan tetap jalan normal memakai data bawaan
-   (siteConfig, products, features) di bawah sebagai cadangan.
-   ========================================================= */
-const sheetConnection = {
-  // Tempel ID Spreadsheet Anda di sini (contoh: "1AbC2dEfG...")
-  sheetId: "1JZuMgtqO0cT-_Emdd6GU6nPh-tl68qkxkP0kCNgHVAo",
-  // GID tab "Produk" (biasanya 0 untuk tab pertama)
-  productsGid: "0",
-  // GID tab "Pengaturan" (lihat di URL saat tab itu dibuka)
-  settingsGid: "485937758",
-};
-
-/* =========================================================
-   1. SITE CONFIG — data cadangan/bawaan (dipakai kalau Google
-   Sheets belum disambungkan, atau saat gagal dimuat)
+   1. SITE CONFIG — ganti semua data umum di sini
    ========================================================= */
 const siteConfig = {
   showroomName: "Suzuki Motor Aroepala",
@@ -172,78 +155,6 @@ const features = [
    Tidak perlu diubah kecuali Anda ingin mengubah perilaku.
    ========================================================= */
 
-/* =========================================================
-   4. AMBIL DATA DARI GOOGLE SHEETS
-   Bagian ini otomatis membaca isi Spreadsheet (kalau sudah
-   disambungkan di sheetConnection) dan menimpa data bawaan
-   di atas. Tidak perlu diubah — cukup isi sheetConnection.
-   ========================================================= */
-
-function buildCsvUrl(gid) {
-  return `https://docs.google.com/spreadsheets/d/${sheetConnection.sheetId}/export?format=csv&gid=${gid}`;
-}
-
-async function fetchSheetRows(gid) {
-  const res = await fetch(buildCsvUrl(gid));
-  if (!res.ok) throw new Error(`Gagal mengambil data (status ${res.status})`);
-  const csvText = await res.text();
-  const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
-  return parsed.data;
-}
-
-/** Mengisi nilai ke object bersarang lewat path seperti "hero.title" */
-function setNestedValue(obj, path, value) {
-  const keys = path.split(".");
-  let target = obj;
-  for (let i = 0; i < keys.length - 1; i++) {
-    if (typeof target[keys[i]] !== "object" || target[keys[i]] === null) {
-      target[keys[i]] = {};
-    }
-    target = target[keys[i]];
-  }
-  target[keys[keys.length - 1]] = value;
-}
-
-/** Ambil tab "Produk" dan timpa array `products` di atas */
-async function loadProductsFromSheet() {
-  if (!sheetConnection.sheetId) return;
-  try {
-    const rows = await fetchSheetRows(sheetConnection.productsGid);
-    const loaded = rows
-      .filter((r) => r.name && r.name.trim())
-      .map((r) => ({
-        name: (r.name || "").trim(),
-        description: (r.description || "").trim(),
-        image: (r.image || "").trim(),
-        specificationUrl: (r.specificationUrl || "#").trim(),
-        whatsappMessage: (r.whatsappMessage || siteConfig.hero.whatsappMessage).trim(),
-      }));
-    if (loaded.length) {
-      products.length = 0;
-      products.push(...loaded);
-    }
-  } catch (err) {
-    console.warn("[Google Sheets] Gagal memuat tab Produk, memakai data bawaan.", err);
-  }
-}
-
-/** Ambil tab "Pengaturan" (key/value) dan timpa `siteConfig` di atas */
-async function loadSettingsFromSheet() {
-  if (!sheetConnection.sheetId || !sheetConnection.settingsGid) return;
-  try {
-    const rows = await fetchSheetRows(sheetConnection.settingsGid);
-    rows.forEach((r) => {
-      const key = (r.key || "").trim();
-      const value = r.value;
-      if (key && value !== undefined && value !== "") {
-        setNestedValue(siteConfig, key, value.trim());
-      }
-    });
-  } catch (err) {
-    console.warn("[Google Sheets] Gagal memuat tab Pengaturan, memakai data bawaan.", err);
-  }
-}
-
 const featureIcons = {
   shield: '<path d="M12 3l7 3v6c0 4.8-3 8.4-7 9-4-.6-7-4.2-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
   smile: '<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 14s1.5 2 3.5 2 3.5-2 3.5-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 9.5h.01M15 9.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
@@ -360,15 +271,7 @@ function initScrollReveal() {
 }
 
 /** Inisialisasi seluruh halaman */
-async function init() {
-  // Tampilkan teks sementara sambil menunggu data (kalau tersambung Sheets)
-  if (sheetConnection.sheetId) {
-    document.getElementById("productGrid").innerHTML =
-      '<p class="loading-text">Memuat produk...</p>';
-  }
-
-  await Promise.all([loadProductsFromSheet(), loadSettingsFromSheet()]);
-
+function init() {
   renderStaticText();
   renderProducts();
   renderFeatures();

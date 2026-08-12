@@ -360,14 +360,6 @@ button { font-family: inherit; cursor: pointer; }
   max-width: 100%;
 }
 
-.loading-text {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: var(--gray-600);
-  padding: 40px 0;
-  font-size: 0.95rem;
-}
-
 /* ---------- Feature grid (keunggulan) ---------- */
 .feature-grid {
   display: grid;
