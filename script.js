@@ -54,9 +54,9 @@ const siteConfig = {
   },
 
   socialLinks: {
-    instagram: "https://instagram.com/suzukiaroepala",
+    instagram: "https://www.instagram.com/galesongsuzukiaroepala/",
     facebook: "https://web.facebook.com/profile.php?id=61579768707537",
-    tiktok: "https://tiktok.com/@suzukiaroepala"
+    tiktok: "https://www.tiktok.com/@galesongsuzukiaroepala"
   }
 };
 
