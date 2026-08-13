@@ -209,7 +209,7 @@ button { font-family: inherit; cursor: pointer; }
   background: linear-gradient(100deg, var(--navy) 32%, rgba(11, 31, 58, 0) 55%, rgba(11, 31, 58, 0) 78%);
 }
 .hero-inner { position: relative; z-index: 2; padding: 90px 24px; }
-.hero .container { max-width: 1600px; }
+.hero .container { max-width: 1400px; }
 .hero-text { max-width: 620px; }
 .hero-text .eyebrow { color: #7cb3e8; }
 .hero-title {
@@ -291,19 +291,17 @@ button { font-family: inherit; cursor: pointer; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: none;
   border: none;
+  padding: 0;
   color: rgba(255, 255, 255, 0.75);
   flex-shrink: 0;
-  transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+  cursor: pointer;
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease);
 }
-.copy-btn:hover { background: rgba(255, 255, 255, 0.18); color: var(--white); }
-.copy-btn:active { transform: scale(0.92); }
+.copy-btn:hover { color: var(--white); }
+.copy-btn:active { transform: scale(0.9); }
 .copy-btn .icon { width: 15px; height: 15px; }
-.copy-btn.is-copied { background: var(--green); color: var(--white); }
 
 .hero-social {
   display: flex;
