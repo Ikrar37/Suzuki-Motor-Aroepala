@@ -173,6 +173,7 @@ function renderStaticText() {
   document.getElementById("headerCity").textContent = siteConfig.city;
   document.getElementById("heroTitle").innerHTML = siteConfig.hero.title.replace(" ", " <br class=\"hero-break\">");
   document.getElementById("heroSubtitle").textContent = siteConfig.hero.subtitle;
+  document.getElementById("heroPhone").textContent = siteConfig.phone;
   document.getElementById("heroHours").innerHTML = `${siteConfig.showroom.hoursWeekday} WITA<br>${siteConfig.showroom.hoursWeekend} WITA`;
   document.getElementById("heroAddress").textContent = siteConfig.showroom.address;
 
@@ -253,6 +254,15 @@ function renderSocial() {
       <svg class="icon" viewBox="0 0 24 24" fill="none">${socialIcons[key] || ""}</svg>
     </a>
   `).join("");
+
+  const heroSocial = document.getElementById("heroSocial");
+  if (heroSocial) {
+    heroSocial.innerHTML = Object.entries(siteConfig.socialLinks).map(([key, url]) => `
+      <a href="${url}" target="_blank" rel="noopener" aria-label="${key}">
+        <svg class="icon" viewBox="0 0 24 24" fill="none">${socialIcons[key] || ""}</svg>
+      </a>
+    `).join("");
+  }
 }
 
 /** Animasi fade-in saat elemen masuk viewport */
@@ -270,6 +280,61 @@ function initScrollReveal() {
   items.forEach((el) => observer.observe(el));
 }
 
+/** Tombol salin nomor WhatsApp di hero */
+function initCopyPhone() {
+  const btn = document.getElementById("btnCopyPhone");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(siteConfig.phone);
+    } catch (err) {
+      // fallback untuk browser lama / tanpa izin clipboard
+      const temp = document.createElement("textarea");
+      temp.value = siteConfig.phone;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+    }
+
+    btn.classList.add("is-copied");
+    btn.querySelector(".icon-copy").hidden = true;
+    btn.querySelector(".icon-check").hidden = false;
+
+    setTimeout(() => {
+      btn.classList.remove("is-copied");
+      btn.querySelector(".icon-copy").hidden = false;
+      btn.querySelector(".icon-check").hidden = true;
+    }, 1800);
+  });
+}
+
+/** Buka/tutup lightbox brosur (bisa dipicu dari beberapa tombol sekaligus) */
+function initBrochureLightbox() {
+  const triggers = document.querySelectorAll(".js-open-brochure");
+  const lightbox = document.getElementById("brochureLightbox");
+  const backdrop = document.getElementById("brochureLightboxBackdrop");
+  const closeBtn = document.getElementById("brochureLightboxClose");
+  if (!triggers.length || !lightbox) return;
+
+  const open = () => {
+    lightbox.hidden = false;
+    document.body.classList.add("lightbox-open");
+  };
+  const close = () => {
+    lightbox.hidden = true;
+    document.body.classList.remove("lightbox-open");
+  };
+
+  triggers.forEach((btn) => btn.addEventListener("click", open));
+  backdrop.addEventListener("click", close);
+  closeBtn.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !lightbox.hidden) close();
+  });
+}
+
 /** Inisialisasi seluruh halaman */
 function init() {
   renderStaticText();
@@ -278,6 +343,8 @@ function init() {
   renderSocial();
   wireLinks();
   initScrollReveal();
+  initCopyPhone();
+  initBrochureLightbox();
 }
 
 document.addEventListener("DOMContentLoaded", init);
