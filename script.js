@@ -10,6 +10,9 @@
    1. SITE CONFIG — ganti semua data umum di sini
    ========================================================= */
 const siteConfig = {
+  // Alamat website (dipakai untuk membangun link gambar & data SEO, JANGAN diberi "/" di akhir)
+  siteUrl: "https://suzukimotormakassar.my.id",
+
   showroomName: "Suzuki Motor Aroepala",
   city: "Makassar, Sulawesi Selatan",
 
@@ -23,14 +26,20 @@ const siteConfig = {
   googleMapsUrl: "https://maps.app.goo.gl/setXAMxxikZGmeEM8",
 
   hero: {
-    title: "SUZUKI AROEPALA",
-    subtitle: "Temukan motor Suzuki impianmu untuk setiap kebutuhan dan gaya hidupmu.",
+    title: "SUZUKI AROEPALA MAKASSAR",
+    subtitle: "Dealer resmi Suzuki di Makassar. Temukan motor Suzuki impianmu untuk setiap kebutuhan dan gaya hidupmu.",
     // pesan WhatsApp default saat tombol hero "CHAT WHATSAPP" diklik
     whatsappMessage: "Hallo Suzuki Aroepala, saya ingin mendapatkan informasi mengenai motor Suzuki."
   },
 
   showroom: {
     address: "Jl. Aroeppala No.255, Gn. Sari, Kec. Rappocini, Kota Makassar, Sulawesi Selatan 90233",
+    // Bagian alamat yang dipecah untuk keperluan SEO (Local Business Schema).
+    // Kalau alamat di atas berubah, sesuaikan juga bagian di bawah ini.
+    addressLocality: "Makassar",
+    addressRegion: "Sulawesi Selatan",
+    postalCode: "90233",
+    addressCountry: "ID",
     hoursWeekday: "Senin - Jumat : 08.00 - 16.00",
     hoursWeekend: "Sabtu : 08.00 - 14.00",
     // pesan WhatsApp saat tombol "CHAT WHATSAPP SEKARANG" (section kontak) diklik
@@ -209,7 +218,7 @@ function renderProducts() {
   grid.innerHTML = products.map((p) => `
     <article class="product-card reveal">
       <div class="product-media">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <img src="${p.image}" alt="${p.name} - Suzuki Aroepala Makassar" loading="lazy" />
       </div>
       <div class="product-body">
         <h3 class="product-name">${p.name}</h3>
@@ -263,6 +272,81 @@ function renderSocial() {
       </a>
     `).join("");
   }
+}
+
+/** =========================================================
+    SEO: Data terstruktur (Schema.org / JSON-LD)
+    Fungsi ini OTOMATIS membuat "kartu identitas bisnis" dan
+    "kartu produk" untuk Google, memakai data yang sama persis
+    dengan yang tampil di halaman (siteConfig & products).
+    Anda TIDAK perlu edit apapun di sini — cukup edit data di
+    bagian SITE CONFIG dan PRODUCTS di atas seperti biasa.
+   ========================================================= */
+function renderSchema() {
+  const absoluteUrl = (path) => `${siteConfig.siteUrl}/${path}`.replace(/([^:])\/\/+/g, "$1/");
+
+  // 1. LocalBusiness / dealer motor
+  const localBusiness = {
+    "@context": "https://schema.org",
+    "@type": "MotorcycleDealer",
+    "name": siteConfig.showroomName,
+    "image": absoluteUrl("assets/showroom.png"),
+    "url": `${siteConfig.siteUrl}/`,
+    "telephone": `+${siteConfig.whatsappNumber}`,
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": siteConfig.showroom.address,
+      "addressLocality": siteConfig.showroom.addressLocality,
+      "addressRegion": siteConfig.showroom.addressRegion,
+      "postalCode": siteConfig.showroom.postalCode,
+      "addressCountry": siteConfig.showroom.addressCountry
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "16:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Saturday"],
+        "opens": "08:00",
+        "closes": "14:00"
+      }
+    ],
+    "hasMap": siteConfig.googleMapsUrl,
+    "sameAs": Object.values(siteConfig.socialLinks)
+  };
+
+  // 2. Daftar produk motor (tanpa harga/rating karya karena tidak tersedia di website)
+  const productList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": products.map((p, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Product",
+        "name": p.name,
+        "description": p.description,
+        "image": absoluteUrl(p.image),
+        "url": p.specificationUrl,
+        "brand": {
+          "@type": "Brand",
+          "name": "Suzuki"
+        }
+      }
+    }))
+  };
+
+  [localBusiness, productList].forEach((data) => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(data);
+    document.head.appendChild(script);
+  });
 }
 
 /** Animasi fade-in saat elemen masuk viewport */
@@ -341,6 +425,7 @@ function init() {
   renderProducts();
   renderFeatures();
   renderSocial();
+  renderSchema();
   wireLinks();
   initScrollReveal();
   initCopyPhone();

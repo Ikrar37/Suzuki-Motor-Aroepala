@@ -73,6 +73,19 @@ button { font-family: inherit; cursor: pointer; }
 
 .icon { width: 20px; height: 20px; flex-shrink: 0; }
 
+/* ---------- Accessibility: teks untuk pembaca layar / SEO, tidak terlihat di layar ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Reveal-on-scroll ---------- */
 .reveal {
   opacity: 0;
